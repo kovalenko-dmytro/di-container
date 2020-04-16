@@ -13,11 +13,11 @@ public class ProductCommand {
     private ProductService productService;
 
     public void doCommand() {
+        System.out.println("command start.....");
         productService.toDoSomething();
     }
 
     public void setProductService(ProductService productService) {
-        System.out.println("command start.....");
         this.productService = productService;
     }
 }
