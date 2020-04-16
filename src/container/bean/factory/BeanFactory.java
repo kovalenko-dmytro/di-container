@@ -1,7 +1,8 @@
 package container.bean.factory;
 
 import container.bean.factory.annotation.Autowired;
-import container.bean.factory.stereotype.Component;
+import container.bean.factory.stereotype.Command;
+import container.bean.factory.stereotype.Service;
 import container.constant.ContainerConstant;
 import container.constant.ErrorMessage;
 import container.exception.BeanCreationException;
@@ -60,7 +61,7 @@ public class BeanFactory {
         Class classObject;
         try {
             classObject = Class.forName(packageName.concat(ContainerConstant.DOT.getValue()).concat(className));
-            if (classObject.isAnnotationPresent(Component.class)) {
+            if (classObject.isAnnotationPresent(Service.class) || classObject.isAnnotationPresent(Command.class)) {
                 Object instance = classObject.getDeclaredConstructor().newInstance();
                 String beanName = className.substring(0, 1).toLowerCase().concat(className.substring(1));
                 singletons.put(beanName, instance);

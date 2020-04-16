@@ -1,9 +1,9 @@
 package client.service;
 
 import container.bean.factory.annotation.Autowired;
-import container.bean.factory.stereotype.Component;
+import container.bean.factory.stereotype.Service;
 
-@Component
+@Service
 public class ProductService {
 
     @Autowired
