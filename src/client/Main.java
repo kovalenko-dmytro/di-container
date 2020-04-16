@@ -1,17 +1,18 @@
 package client;
 
 import client.controller.ProductCommand;
-import client.service.ProductService;
+import container.BeanContainer;
+import container.annotation.ScanPackage;
 import container.bean.factory.BeanFactory;
 import container.exception.BeanCreationException;
 
+@ScanPackage
 public class Main {
 
     public static void main(String[] args) throws BeanCreationException {
-        BeanFactory beanFactory = new BeanFactory();
-        beanFactory.init("client");
+        BeanContainer.init(Main.class);
+        BeanFactory beanFactory = BeanFactory.getInstance();
         ProductCommand productCommand = (ProductCommand) beanFactory.getBean("productCommand");
         productCommand.doCommand();
-
     }
 }

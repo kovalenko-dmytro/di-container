@@ -17,7 +17,18 @@ import java.util.*;
 
 public class BeanFactory {
 
+    private BeanFactory instance;
     private Map<String, Object> singletons = new HashMap<>();
+
+    private BeanFactory() {}
+
+    private static class BeanFactoryHolder {
+        private static final BeanFactory instance = new BeanFactory();
+    }
+
+    public static BeanFactory getInstance() {
+        return BeanFactoryHolder.instance;
+    }
 
     public void init(String packageName) throws BeanCreationException {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
@@ -94,7 +105,10 @@ public class BeanFactory {
         });
     }
 
-    public Object getBean(String beanName){
+    public Object getBean(String beanName) throws BeanCreationException {
+        if (singletons.isEmpty()) {
+            throw new BeanCreationException(ErrorMessage.ANY_BEAN_NOT_FOUND.getValue());
+        }
         return singletons.get(beanName);
     }
 }
