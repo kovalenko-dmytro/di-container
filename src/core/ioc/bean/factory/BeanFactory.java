@@ -16,7 +16,7 @@ public class BeanFactory {
     private BeanScanner beanScanner;
     private BeanInjector beanInjector;
 
-    private Map<String, Object> singletons = new HashMap<>();
+    private Map<String, Object> beans = new HashMap<>();
 
     private BeanFactory() {
         beanScanner = new BeanScanner();
@@ -32,19 +32,19 @@ public class BeanFactory {
     }
 
     public void init(String packageName) throws BeanCreationException {
-        beanScanner.scanPackage(packageName, singletons);
-        beanInjector.injectDependencies(singletons);
+        beanScanner.scanPackage(packageName, beans);
+        beanInjector.injectDependencies(beans);
     }
 
     public Object getBean(String beanName) throws BeanCreationException {
-        if (singletons.isEmpty()) {
+        if (beans.isEmpty()) {
             throw new BeanCreationException(ErrorMessage.ANY_BEAN_NOT_FOUND.getValue());
         }
-        return singletons.get(beanName);
+        return beans.get(beanName);
     }
 
     public List<Object> getLaunchBeans() {
-        return singletons.values()
+        return beans.values()
             .stream()
             .filter(singleton -> singleton.getClass().isAnnotationPresent(Launcher.class))
             .collect(Collectors.toList());
