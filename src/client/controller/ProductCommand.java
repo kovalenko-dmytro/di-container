@@ -1,23 +1,21 @@
 package client.controller;
 
-import client.SourceType;
-import client.service.ProductService;
-import container.bean.factory.annotation.Autowired;
-import container.bean.factory.stereotype.Command;
-import container.bean.factory.stereotype.Service;
+import client.service.ClientService;
+import core.container.bean.factory.annotation.Autowired;
+import core.container.bean.factory.stereotype.ConsoleController;
 
-@Command
+@ConsoleController
 public class ProductCommand {
 
-    @Autowired
-    private ProductService productService;
+    @Autowired(fullQualifier = "client.service.ProductClientService")
+    private ClientService clientService;
 
     public void doCommand() {
         System.out.println("command start.....");
-        productService.toDoSomething();
+        clientService.toDoSomething();
     }
 
-    public void setProductService(ProductService productService) {
-        this.productService = productService;
+    public void setClientService(ClientService clientService) {
+        this.clientService = clientService;
     }
 }

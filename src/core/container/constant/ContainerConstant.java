@@ -1,4 +1,4 @@
-package container.constant;
+package core.container.constant;
 
 public enum ContainerConstant {
     DOT("."),

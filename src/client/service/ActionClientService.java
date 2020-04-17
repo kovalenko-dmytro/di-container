@@ -1,10 +1,12 @@
 package client.service;
 
-import container.bean.factory.stereotype.Service;
+
+import core.container.bean.factory.stereotype.Service;
 
 @Service
-public class ActionService {
+public class ActionClientService implements ClientService {
 
+    @Override
     public void toDoSomething() {
         System.out.println("Invoke actionService.toDoSomething()");
     }

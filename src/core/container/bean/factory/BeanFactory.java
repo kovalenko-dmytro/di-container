@@ -1,11 +1,11 @@
-package container.bean.factory;
+package core.container.bean.factory;
 
-import container.bean.factory.annotation.Autowired;
-import container.bean.factory.stereotype.Command;
-import container.bean.factory.stereotype.Service;
-import container.constant.ContainerConstant;
-import container.constant.ErrorMessage;
-import container.exception.BeanCreationException;
+import core.container.bean.factory.annotation.Autowired;
+import core.container.bean.factory.stereotype.ConsoleController;
+import core.container.bean.factory.stereotype.Service;
+import core.container.constant.ContainerConstant;
+import core.container.constant.ErrorMessage;
+import core.container.exception.BeanCreationException;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +17,6 @@ import java.util.*;
 
 public class BeanFactory {
 
-    private BeanFactory instance;
     private Map<String, Object> singletons = new HashMap<>();
 
     private BeanFactory() {}
@@ -72,7 +71,7 @@ public class BeanFactory {
         Class classObject;
         try {
             classObject = Class.forName(packageName.concat(ContainerConstant.DOT.getValue()).concat(className));
-            if (classObject.isAnnotationPresent(Service.class) || classObject.isAnnotationPresent(Command.class)) {
+            if (classObject.isAnnotationPresent(Service.class) || classObject.isAnnotationPresent(ConsoleController.class)) {
                 Object instance = classObject.getDeclaredConstructor().newInstance();
                 String beanName = className.substring(0, 1).toLowerCase().concat(className.substring(1));
                 singletons.put(beanName, instance);
@@ -82,24 +81,55 @@ public class BeanFactory {
         }
     }
 
-    private void populateProperties() {
+    private void populateProperties() throws BeanCreationException {
         singletons.values().forEach(bean -> {
             Arrays.stream(bean.getClass().getDeclaredFields()).forEach(field -> {
                 if (field.isAnnotationPresent(Autowired.class)) {
-                    singletons.values().forEach(dependency -> {
-                        if (dependency.getClass().equals(field.getType())) {
+                    if (field.getType().isInterface()) {
+                        Optional<Object> dependency = singletons.values()
+                            .stream()
+                            .filter(impl ->
+                                Arrays.stream(impl.getClass().getInterfaces())
+                                    .anyMatch(interfaceClass ->
+                                        interfaceClass.equals(field.getType())) &&
+                                    field.getAnnotation(Autowired.class).fullQualifier().equals(impl.getClass().getName()))
+                            .findFirst();
+
+                        if (dependency.isEmpty()) {
+                            try {
+                                throw new BeanCreationException(ErrorMessage.CANNOT_INJECT_DEPENDENCY.getValue());
+                            } catch (BeanCreationException e) {
+                                e.printStackTrace();
+                            }
+                        } else {
                             String setterName = ContainerConstant.SETTER_PREFIX.getValue()
                                 .concat(field.getName().substring(0, 1).toUpperCase())
                                 .concat(field.getName().substring(1));
                             Method setter;
                             try {
-                                setter = bean.getClass().getMethod(setterName, dependency.getClass());
-                                setter.invoke(bean, dependency);
+                                setter = bean.getClass().getMethod(setterName, field.getType());
+                                setter.invoke(bean, dependency.get());
                             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                                 e.printStackTrace();
                             }
                         }
-                    });
+
+                    } else {
+                        singletons.values().forEach(dependency -> {
+                            if (dependency.getClass().equals(field.getType())) {
+                                String setterName = ContainerConstant.SETTER_PREFIX.getValue()
+                                    .concat(field.getName().substring(0, 1).toUpperCase())
+                                    .concat(field.getName().substring(1));
+                                Method setter;
+                                try {
+                                    setter = bean.getClass().getMethod(setterName, dependency.getClass());
+                                    setter.invoke(bean, dependency);
+                                } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+                    }
                 }
             });
         });
