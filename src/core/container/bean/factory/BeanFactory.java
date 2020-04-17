@@ -88,13 +88,23 @@ public class BeanFactory {
             Arrays.stream(bean.getClass().getDeclaredFields()).forEach(field -> {
                 if (field.isAnnotationPresent(Autowired.class)) {
                     if (field.getType().isInterface()) {
-                        Optional<Object> dependency = singletons.values()
+                        List<Object> dependencies = singletons.values()
                             .stream()
                             .filter(impl ->
                                 Arrays.stream(impl.getClass().getInterfaces())
                                     .anyMatch(interfaceClass ->
-                                        interfaceClass.equals(field.getType())) &&
-                                    field.getAnnotation(Autowired.class).fullQualifier().equals(impl.getClass().getName()))
+                                        interfaceClass.equals(field.getType())))
+                            .collect(Collectors.toList());
+                        if (dependencies.size() > 1 && field.getAnnotation(Autowired.class).fullQualifier().isBlank()) {
+                            try {
+                                throw new BeanCreationException(ErrorMessage.CANNOT_FIND_QUALIFIER.getValue());
+                            } catch (BeanCreationException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        Optional<Object> dependency = dependencies
+                            .stream()
+                            .filter(impl -> field.getAnnotation(Autowired.class).fullQualifier().equals(impl.getClass().getName()))
                             .findFirst();
 
                         if (dependency.isEmpty()) {
