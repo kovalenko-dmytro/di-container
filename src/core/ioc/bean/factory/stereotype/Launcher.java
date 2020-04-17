@@ -1,6 +1,6 @@
-package core.container.bean.factory.stereotype;
+package core.ioc.bean.factory.stereotype;
 
-import core.container.constant.LaunchType;
+import core.ioc.constant.LaunchType;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

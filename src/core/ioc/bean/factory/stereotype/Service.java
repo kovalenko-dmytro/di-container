@@ -1,4 +1,4 @@
-package core.container.bean.factory.stereotype;
+package core.ioc.bean.factory.stereotype;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -7,5 +7,5 @@ import java.lang.annotation.Target;
 
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ConsoleController {
+public @interface Service {
 }

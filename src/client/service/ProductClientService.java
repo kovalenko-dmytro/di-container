@@ -1,8 +1,8 @@
 package client.service;
 
 
-import core.container.bean.factory.annotation.Autowired;
-import core.container.bean.factory.stereotype.Service;
+import core.ioc.bean.factory.annotation.Autowired;
+import core.ioc.bean.factory.stereotype.Service;
 
 @Service
 public class ProductClientService implements ClientService {

@@ -3,10 +3,10 @@ package client;
 
 import client.controller.CommandInterface;
 import core.application.Application;
-import core.container.annotation.ScanPackage;
-import core.container.bean.factory.annotation.Autowired;
-import core.container.bean.factory.stereotype.Launcher;
-import core.container.exception.BeanCreationException;
+import core.ioc.annotation.ScanPackage;
+import core.ioc.bean.factory.annotation.Autowired;
+import core.ioc.bean.factory.stereotype.Launcher;
+import core.ioc.exception.BeanCreationException;
 
 @Launcher
 @ScanPackage

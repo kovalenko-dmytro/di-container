@@ -1,8 +1,8 @@
 package client.controller;
 
 import client.service.ClientService;
-import core.container.bean.factory.annotation.Autowired;
-import core.container.bean.factory.stereotype.ConsoleController;
+import core.ioc.bean.factory.annotation.Autowired;
+import core.ioc.bean.factory.stereotype.ConsoleController;
 
 @ConsoleController
 public class ProductCommand implements CommandInterface{

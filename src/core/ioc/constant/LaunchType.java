@@ -1,4 +1,4 @@
-package core.container.constant;
+package core.ioc.constant;
 
 public enum LaunchType {
 

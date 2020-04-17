@@ -1,4 +1,4 @@
-package core.container.exception;
+package core.ioc.exception;
 
 public class BeanCreationException extends Exception {
 

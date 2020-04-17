@@ -1,4 +1,4 @@
-package core.container.bean.factory.annotation;
+package core.ioc.bean.factory.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

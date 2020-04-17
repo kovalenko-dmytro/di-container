@@ -1,7 +1,7 @@
 package client.service;
 
 
-import core.container.bean.factory.stereotype.Service;
+import core.ioc.bean.factory.stereotype.Service;
 
 @Service
 public class ActionClientService implements ClientService {

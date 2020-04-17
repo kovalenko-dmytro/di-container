@@ -1,4 +1,4 @@
-package core.container.constant;
+package core.ioc.constant;
 
 public enum ErrorMessage {
     CANNOT_LOAD_PACKAGE("Cannot load source package"),
