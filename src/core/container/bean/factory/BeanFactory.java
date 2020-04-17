@@ -2,6 +2,7 @@ package core.container.bean.factory;
 
 import core.container.bean.factory.annotation.Autowired;
 import core.container.bean.factory.stereotype.ConsoleController;
+import core.container.bean.factory.stereotype.Launcher;
 import core.container.bean.factory.stereotype.Service;
 import core.container.constant.ContainerConstant;
 import core.container.constant.ErrorMessage;
@@ -14,6 +15,7 @@ import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class BeanFactory {
 
@@ -71,7 +73,7 @@ public class BeanFactory {
         Class classObject;
         try {
             classObject = Class.forName(packageName.concat(ContainerConstant.DOT.getValue()).concat(className));
-            if (classObject.isAnnotationPresent(Service.class) || classObject.isAnnotationPresent(ConsoleController.class)) {
+            if (classObject.isAnnotationPresent(Service.class) || classObject.isAnnotationPresent(ConsoleController.class) || classObject.isAnnotationPresent(Launcher.class)) {
                 Object instance = classObject.getDeclaredConstructor().newInstance();
                 String beanName = className.substring(0, 1).toLowerCase().concat(className.substring(1));
                 singletons.put(beanName, instance);
@@ -140,5 +142,12 @@ public class BeanFactory {
             throw new BeanCreationException(ErrorMessage.ANY_BEAN_NOT_FOUND.getValue());
         }
         return singletons.get(beanName);
+    }
+
+    public List<Object> getLaunchBeans() {
+        return singletons.values()
+            .stream()
+            .filter(singleton -> singleton.getClass().isAnnotationPresent(Launcher.class))
+            .collect(Collectors.toList());
     }
 }

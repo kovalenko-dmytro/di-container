@@ -5,7 +5,10 @@ public enum ErrorMessage {
     CANNOT_CREATE_BEAN("Cannot create bean:"),
     CANNOT_INJECT_DEPENDENCY("Cannot inject dependency for bean: "),
     CANNOT_SCAN_PACKAGE("Cannot scan package"),
-    ANY_BEAN_NOT_FOUND("Any bean not found");
+    CANNOT_FIND_LAUNCHER("Cannot find launcher object"),
+    ANY_BEAN_NOT_FOUND("Any bean not found"),
+    CANNOT_MORE_THAN_ONE_LAUNCHER("Cannot be more than one launcher with the same launch type"),
+    CANNOT_INVOKE_LAUNCH_METHOD("Cannot invoke launch method");
 
 
     private String value;
