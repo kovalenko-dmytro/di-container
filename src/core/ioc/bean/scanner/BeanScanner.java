@@ -13,22 +13,20 @@ import java.lang.reflect.InvocationTargetException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class BeanScanner {
 
-    public static Map<String, Object> scanPackage(String packageName) throws BeanCreationException {
+    public void scanPackage(String packageName, Map<String, Object> beans) throws BeanCreationException {
         try {
-            return analyzeResources(packageName);
+            analyzeResources(packageName, beans);
         } catch (IOException | URISyntaxException e) {
             throw new BeanCreationException(ErrorMessage.CANNOT_LOAD_PACKAGE.getValue());
         }
     }
 
-    private static Map<String, Object> analyzeResources(String packageName) throws IOException, URISyntaxException, BeanCreationException {
-        Map<String, Object> beans = new HashMap<>();
+    private void analyzeResources(String packageName, Map<String, Object> beans) throws IOException, URISyntaxException, BeanCreationException {
         ClassLoader classLoader = ClassLoader.getSystemClassLoader();
         String path = packageName.replace(ContainerConstant.DOT.getValue(), ContainerConstant.SLASH.getValue());
         Enumeration<URL> resources = classLoader.getResources(path);
@@ -42,10 +40,9 @@ public class BeanScanner {
                 }
             }
         }
-        return beans;
     }
 
-    private static void processFile(String packageName, File classFile, Map<String, Object> beans) throws BeanCreationException {
+    private void processFile(String packageName, File classFile, Map<String, Object> beans) throws BeanCreationException {
         String fileName = classFile.getName();
         if (classFile.isFile() && fileName.endsWith(ContainerConstant.CLASS_EXTENSION.getValue())) {
             initBean(packageName, fileName, beans);
@@ -57,7 +54,7 @@ public class BeanScanner {
         }
     }
 
-    private static void initBean(String packageName, String fileName, Map<String, Object> beans) throws BeanCreationException {
+    private void initBean(String packageName, String fileName, Map<String, Object> beans) throws BeanCreationException {
         String className = fileName.substring(0, fileName.lastIndexOf(ContainerConstant.DOT.getValue()));
         Class classObject;
         try {

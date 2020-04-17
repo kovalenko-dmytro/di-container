@@ -6,15 +6,22 @@ import core.ioc.bean.scanner.BeanScanner;
 import core.ioc.constant.ErrorMessage;
 import core.ioc.exception.BeanCreationException;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 public class BeanFactory {
 
-    private Map<String, Object> singletons;
+    private BeanScanner beanScanner;
+    private BeanInjector beanInjector;
 
-    private BeanFactory() {}
+    private Map<String, Object> singletons = new HashMap<>();
+
+    private BeanFactory() {
+        beanScanner = new BeanScanner();
+        beanInjector = new BeanInjector();
+    }
 
     private static class BeanFactoryHolder {
         private static final BeanFactory instance = new BeanFactory();
@@ -25,8 +32,8 @@ public class BeanFactory {
     }
 
     public void init(String packageName) throws BeanCreationException {
-        singletons = BeanScanner.scanPackage(packageName);
-        BeanInjector.injectDependencies(singletons);
+        beanScanner.scanPackage(packageName, singletons);
+        beanInjector.injectDependencies(singletons);
     }
 
     public Object getBean(String beanName) throws BeanCreationException {
