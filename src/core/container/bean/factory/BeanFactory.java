@@ -1,25 +1,23 @@
 package core.container.bean.factory;
 
 import core.container.bean.factory.annotation.Autowired;
-import core.container.bean.factory.stereotype.ConsoleController;
 import core.container.bean.factory.stereotype.Launcher;
-import core.container.bean.factory.stereotype.Service;
+import core.container.bean.scanner.BeanScanner;
 import core.container.constant.ContainerConstant;
 import core.container.constant.ErrorMessage;
 import core.container.exception.BeanCreationException;
 
-import java.io.File;
-import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BeanFactory {
 
-    private Map<String, Object> singletons = new HashMap<>();
+    private Map<String, Object> singletons;
 
     private BeanFactory() {}
 
@@ -32,55 +30,8 @@ public class BeanFactory {
     }
 
     public void init(String packageName) throws BeanCreationException {
-        ClassLoader classLoader = ClassLoader.getSystemClassLoader();
-        scanPackage(packageName, classLoader);
+        singletons = BeanScanner.scanPackage(packageName);
         populateProperties();
-    }
-
-    private void scanPackage(String packageName, ClassLoader classLoader) throws BeanCreationException {
-        String path = packageName.replace(ContainerConstant.DOT.getValue(), ContainerConstant.SLASH.getValue());
-        try {
-            Enumeration<URL> resources = classLoader.getResources(path);
-            while (resources.hasMoreElements()) {
-                URL resource = resources.nextElement();
-                File file = new File(resource.toURI());
-                if (file.isDirectory()) {
-                    for (File classFile : Objects.requireNonNull(file.listFiles())) {
-                        processFile(packageName, classFile);
-                    }
-                }
-            }
-            System.out.println(singletons);
-        } catch (IOException | URISyntaxException e) {
-            throw new BeanCreationException(ErrorMessage.CANNOT_LOAD_PACKAGE.getValue());
-        }
-    }
-
-    private void processFile(String packageName, File classFile) throws BeanCreationException {
-        String fileName = classFile.getName();
-        if (classFile.isFile() && fileName.endsWith(ContainerConstant.CLASS_EXTENSION.getValue())) {
-            initBean(packageName, fileName);
-        } else if (classFile.isDirectory()) {
-            packageName = packageName.concat(ContainerConstant.DOT.getValue()).concat(fileName);
-            for (File file : Objects.requireNonNull(classFile.listFiles())) {
-                processFile(packageName, file);
-            }
-        }
-    }
-
-    private void initBean(String packageName, String fileName) throws BeanCreationException {
-        String className = fileName.substring(0, fileName.lastIndexOf(ContainerConstant.DOT.getValue()));
-        Class classObject;
-        try {
-            classObject = Class.forName(packageName.concat(ContainerConstant.DOT.getValue()).concat(className));
-            if (classObject.isAnnotationPresent(Service.class) || classObject.isAnnotationPresent(ConsoleController.class) || classObject.isAnnotationPresent(Launcher.class)) {
-                Object instance = classObject.getDeclaredConstructor().newInstance();
-                String beanName = className.substring(0, 1).toLowerCase().concat(className.substring(1));
-                singletons.put(beanName, instance);
-            }
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InstantiationException | InvocationTargetException e) {
-            throw new BeanCreationException(ErrorMessage.CANNOT_CREATE_BEAN.getValue() + packageName + fileName);
-        }
     }
 
     private void populateProperties() throws BeanCreationException {
