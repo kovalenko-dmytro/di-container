@@ -1,11 +1,11 @@
-package core.application.factory;
+package core.application.runner;
 
 import core.application.exception.ApplicationException;
-import core.application.factory.runner.ConsoleRunner;
+import core.application.runner.console.ConsoleRunner;
 import core.ioc.constant.ErrorMessage;
 import core.ioc.constant.LaunchType;
 
-public class ApplicationFactory {
+public class RunnerFactory {
 
     public static Runner getRunner(LaunchType type) throws ApplicationException {
         switch (type) {

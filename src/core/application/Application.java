@@ -1,8 +1,8 @@
 package core.application;
 
 import core.application.exception.ApplicationException;
-import core.application.factory.ApplicationFactory;
-import core.application.factory.Runner;
+import core.application.runner.Runner;
+import core.application.runner.RunnerFactory;
 import core.ioc.annotation.ScanPackage;
 import core.ioc.bean.factory.BeanFactory;
 import core.ioc.bean.factory.stereotype.Launcher;
@@ -20,7 +20,7 @@ public class Application {
         try {
             instantiateBeans(clazz);
             Object launcher = getCurrentLauncher(clazz);
-            Runner runner = ApplicationFactory.getRunner(launcher.getClass().getAnnotation(Launcher.class).launchType());
+            Runner runner = RunnerFactory.getRunner(launcher.getClass().getAnnotation(Launcher.class).launchType());
             runner.run(args);
         } catch (ApplicationException | BeanCreationException e) {
             System.out.println(e.getMessage());

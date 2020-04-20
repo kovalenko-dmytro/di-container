@@ -1,4 +1,4 @@
-package core.application.factory;
+package core.application.runner;
 
 import core.application.exception.ApplicationException;
 
