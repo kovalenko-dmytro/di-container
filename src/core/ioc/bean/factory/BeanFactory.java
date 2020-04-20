@@ -25,9 +25,9 @@ public class BeanFactory {
     }
 
     private static class BeanFactoryHolder {
-
         private static final BeanFactory instance = new BeanFactory();
     }
+
     public static BeanFactory getInstance() {
         return BeanFactoryHolder.instance;
     }
