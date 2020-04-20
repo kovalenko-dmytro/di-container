@@ -1,9 +1,12 @@
 package core.application;
 
+import core.application.factory.ApplicationFactory;
+import core.application.factory.Runner;
 import core.ioc.annotation.ScanPackage;
 import core.ioc.bean.factory.BeanFactory;
 import core.ioc.bean.factory.stereotype.Launcher;
 import core.ioc.constant.ErrorMessage;
+import core.ioc.exception.ApplicationException;
 import core.ioc.exception.BeanCreationException;
 
 import java.lang.reflect.InvocationTargetException;
@@ -17,10 +20,13 @@ public abstract class Application {
 
     public abstract void start(String... args);
 
-    protected static void launch(Class clazz, String... args) throws BeanCreationException {
+    public static void launch(Class clazz, String... args) throws BeanCreationException, ApplicationException {
         instantiateBeans(clazz);
         Object launcher = getCurrentLauncher(clazz);
-        invokeLauncherStartMethod(launcher, args);
+        //invokeLauncherStartMethod(launcher, args);
+
+        Runner runner = ApplicationFactory.getRunner(launcher.getClass().getAnnotation(Launcher.class).launchType());
+        runner.run(args);
     }
 
     private static Object getCurrentLauncher(Class clazz) throws BeanCreationException {
