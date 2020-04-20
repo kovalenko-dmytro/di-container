@@ -8,6 +8,7 @@ import core.application.input.console.ConsoleRequestReader;
 import core.application.input.console.entity.ConsoleRequest;
 import core.application.resolve.Resolver;
 import core.application.resolve.console.ConsoleControllerResolver;
+import core.ioc.exception.ApplicationException;
 
 public class ConsoleRunner implements Runner {
 
@@ -24,7 +25,7 @@ public class ConsoleRunner implements Runner {
     }
 
     @Override
-    public void run(String ... args) {
+    public void run(String ... args) throws ApplicationException {
         String input = null;
         while (!EXIT_COMMAND_NAME.equalsIgnoreCase(input)) {
             input = reader.read();

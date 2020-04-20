@@ -4,22 +4,22 @@ import java.util.Map;
 
 public class ConsoleRequest {
 
-    private String commandName;
-    private Map<String, String> commandParameters;
+    private String requestPath;
+    private Map<String, String> requestParameters;
 
-    public String getCommandName() {
-        return commandName;
+    public String getRequestPath() {
+        return requestPath;
     }
 
-    public void setCommandName(String commandName) {
-        this.commandName = commandName;
+    public void setRequestPath(String requestPath) {
+        this.requestPath = requestPath;
     }
 
-    public Map<String, String> getCommandParameters() {
-        return commandParameters;
+    public Map<String, String> getRequestParameters() {
+        return requestParameters;
     }
 
-    public void setCommandParameters(Map<String, String> commandParameters) {
-        this.commandParameters = commandParameters;
+    public void setRequestParameters(Map<String, String> requestParameters) {
+        this.requestParameters = requestParameters;
     }
 }
