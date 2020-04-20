@@ -1,5 +1,6 @@
 package core.ioc.bean.factory;
 
+import core.ioc.bean.factory.stereotype.Controller;
 import core.ioc.bean.factory.stereotype.Launcher;
 import core.ioc.bean.injector.BeanInjector;
 import core.ioc.bean.scanner.BeanScanner;
@@ -24,9 +25,9 @@ public class BeanFactory {
     }
 
     private static class BeanFactoryHolder {
+
         private static final BeanFactory instance = new BeanFactory();
     }
-
     public static BeanFactory getInstance() {
         return BeanFactoryHolder.instance;
     }
@@ -47,6 +48,13 @@ public class BeanFactory {
         return beans.values()
             .stream()
             .filter(singleton -> singleton.getClass().isAnnotationPresent(Launcher.class))
+            .collect(Collectors.toList());
+    }
+
+    public List<Object> getControllers() {
+        return beans.values()
+            .stream()
+            .filter(bean -> bean.getClass().isAnnotationPresent(Controller.class))
             .collect(Collectors.toList());
     }
 }

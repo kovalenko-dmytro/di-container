@@ -5,7 +5,7 @@ import core.application.input.console.entity.ConsoleRequest;
 import core.ioc.constant.ErrorMessage;
 import core.ioc.exception.ApplicationException;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -33,7 +33,7 @@ public class ConsoleRequestParser implements RequestParser<ConsoleRequest> {
     }
 
     private Map<String, String> getRequestParameters(String input) {
-        Map<String, String> result = new HashMap<>();
+        Map<String, String> result = new LinkedHashMap<>();
         Matcher matcher = Pattern.compile(REQUEST_PARAMS_REGEX, Pattern.CASE_INSENSITIVE).matcher(input);
         while (matcher.find()) {
             String paramName = matcher.group(1);

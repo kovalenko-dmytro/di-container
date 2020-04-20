@@ -25,12 +25,16 @@ public class ConsoleRunner implements Runner {
     }
 
     @Override
-    public void run(String ... args) throws ApplicationException {
+    public void run(String ... args) {
         String input = null;
         while (!EXIT_COMMAND_NAME.equalsIgnoreCase(input)) {
             input = reader.read();
-            ConsoleRequest request = parser.parse(input);
-            resolver.resolve(request);
+            try {
+                ConsoleRequest request = parser.parse(input);
+                resolver.resolve(request);
+            } catch (ApplicationException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 }

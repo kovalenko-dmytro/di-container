@@ -9,8 +9,6 @@ import core.ioc.constant.ErrorMessage;
 import core.ioc.exception.ApplicationException;
 import core.ioc.exception.BeanCreationException;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,13 +16,15 @@ public abstract class Application {
 
     private static BeanFactory beanFactory;
 
-    public static void launch(Class clazz, String... args) throws BeanCreationException, ApplicationException {
-        instantiateBeans(clazz);
-        Object launcher = getCurrentLauncher(clazz);
-        //invokeLauncherStartMethod(launcher, args);
-
-        Runner runner = ApplicationFactory.getRunner(launcher.getClass().getAnnotation(Launcher.class).launchType());
-        runner.run(args);
+    public static void launch(Class clazz, String... args) {
+        try {
+            instantiateBeans(clazz);
+            Object launcher = getCurrentLauncher(clazz);
+            Runner runner = ApplicationFactory.getRunner(launcher.getClass().getAnnotation(Launcher.class).launchType());
+            runner.run(args);
+        } catch (ApplicationException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private static Object getCurrentLauncher(Class clazz) throws BeanCreationException {
@@ -41,17 +41,6 @@ public abstract class Application {
                 bean.getClass().getAnnotation(Launcher.class).launchType()
                     .equals(((Launcher) clazz.getAnnotation(Launcher.class)).launchType()))
             .collect(Collectors.toList());
-    }
-
-    private static void invokeLauncherStartMethod(Object launcher, Object args) throws BeanCreationException {
-        String launchMethodName = launcher.getClass().getAnnotation(Launcher.class).launchType().getLaunchMethodName();
-        Method launchMethod;
-        try {
-            launchMethod = launcher.getClass().getMethod(launchMethodName, String[].class);
-            launchMethod.invoke(launcher, args);
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new BeanCreationException(ErrorMessage.CANNOT_INVOKE_LAUNCH_METHOD.getValue());
-        }
     }
 
     private static void instantiateBeans(Class clazz) throws BeanCreationException {
