@@ -9,6 +9,7 @@ import core.application.input.console.ConsoleRequestReader;
 import core.application.input.console.entity.ConsoleRequest;
 import core.application.resolve.Resolver;
 import core.application.resolve.console.ConsoleControllerResolver;
+import core.ioc.exception.BeanCreationException;
 
 public class ConsoleRunner implements Runner {
 
@@ -33,7 +34,7 @@ public class ConsoleRunner implements Runner {
             try {
                 ConsoleRequest request = parser.parse(input);
                 resolver.resolve(request);
-            } catch (ApplicationException e) {
+            } catch (ApplicationException | BeanCreationException e) {
                 System.out.println(e.getMessage());
             }
         }

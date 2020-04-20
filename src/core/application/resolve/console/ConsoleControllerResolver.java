@@ -8,6 +8,7 @@ import core.application.resolve.annotation.RequestMapping;
 import core.application.resolve.entity.RequestPathMatchResult;
 import core.ioc.bean.factory.BeanFactory;
 import core.ioc.constant.ErrorMessage;
+import core.ioc.exception.BeanCreationException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -24,9 +25,8 @@ public class ConsoleControllerResolver implements Resolver<ConsoleRequest> {
     private static final String CLOSE_CURL = "}";
 
     @Override
-    public void resolve(ConsoleRequest request) throws ApplicationException {
-        BeanFactory beanFactory = BeanFactory.getInstance();
-        List<Object> controllers = beanFactory.getControllers();
+    public void resolve(ConsoleRequest request) throws ApplicationException, BeanCreationException {
+        List<Object> controllers = BeanFactory.getInstance().getControllers();
         RequestPathMatchResult result = findRequestPathMatch(controllers, request);
         Method pathMatchMethod = result.getRequestPathMethod();
         try {

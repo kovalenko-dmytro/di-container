@@ -37,24 +37,25 @@ public class BeanFactory {
         beanInjector.injectDependencies(beans);
     }
 
-    public Object getBean(String beanName) throws BeanCreationException {
-        if (beans.isEmpty()) {
-            throw new BeanCreationException(ErrorMessage.ANY_BEAN_NOT_FOUND.getValue());
-        }
-        return beans.get(beanName);
-    }
-
-    public List<Object> getLaunchBeans() {
+    public List<Object> getLaunchBeans() throws BeanCreationException {
+        checkInitBeans();
         return beans.values()
             .stream()
             .filter(singleton -> singleton.getClass().isAnnotationPresent(Launcher.class))
             .collect(Collectors.toList());
     }
 
-    public List<Object> getControllers() {
+    public List<Object> getControllers() throws BeanCreationException {
+        checkInitBeans();
         return beans.values()
             .stream()
             .filter(bean -> bean.getClass().isAnnotationPresent(Controller.class))
             .collect(Collectors.toList());
+    }
+
+    private void checkInitBeans() throws BeanCreationException {
+        if (beans.isEmpty()) {
+            throw new BeanCreationException(ErrorMessage.ANY_BEAN_NOT_FOUND.getValue());
+        }
     }
 }

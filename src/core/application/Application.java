@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 
 public class Application {
 
-    private static BeanFactory beanFactory;
-
     private Application(){}
 
     public static void launch(Class clazz, String... args) {
@@ -37,8 +35,8 @@ public class Application {
         return launchers.get(0);
     }
 
-    private static List<Object> findLaunchers(Class clazz) {
-        return beanFactory.getLaunchBeans().stream()
+    private static List<Object> findLaunchers(Class clazz) throws BeanCreationException {
+        return BeanFactory.getInstance().getLaunchBeans().stream()
             .filter(bean ->
                 bean.getClass().getAnnotation(Launcher.class).launchType()
                     .equals(((Launcher) clazz.getAnnotation(Launcher.class)).launchType()))
@@ -47,8 +45,7 @@ public class Application {
 
     private static void instantiateBeans(Class clazz) throws BeanCreationException {
         String scanPackage = getScanPackageAttribute(clazz);
-        beanFactory = BeanFactory.getInstance();
-        beanFactory.init(scanPackage);
+        BeanFactory.getInstance().init(scanPackage);
     }
 
     private static String getScanPackageAttribute(Class clazz) throws BeanCreationException {
