@@ -1,4 +1,4 @@
-package core.ioc.exception;
+package core.application.exception;
 
 public class ApplicationException extends Exception {
     public ApplicationException(String message) {

@@ -1,20 +1,22 @@
 package core.application;
 
+import core.application.exception.ApplicationException;
 import core.application.factory.ApplicationFactory;
 import core.application.factory.Runner;
 import core.ioc.annotation.ScanPackage;
 import core.ioc.bean.factory.BeanFactory;
 import core.ioc.bean.factory.stereotype.Launcher;
 import core.ioc.constant.ErrorMessage;
-import core.ioc.exception.ApplicationException;
 import core.ioc.exception.BeanCreationException;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public abstract class Application {
+public class Application {
 
     private static BeanFactory beanFactory;
+
+    private Application(){}
 
     public static void launch(Class clazz, String... args) {
         try {
@@ -22,7 +24,7 @@ public abstract class Application {
             Object launcher = getCurrentLauncher(clazz);
             Runner runner = ApplicationFactory.getRunner(launcher.getClass().getAnnotation(Launcher.class).launchType());
             runner.run(args);
-        } catch (ApplicationException e) {
+        } catch (ApplicationException | BeanCreationException e) {
             System.out.println(e.getMessage());
         }
     }

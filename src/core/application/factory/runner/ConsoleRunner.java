@@ -1,5 +1,6 @@
 package core.application.factory.runner;
 
+import core.application.exception.ApplicationException;
 import core.application.factory.Runner;
 import core.application.input.RequestParser;
 import core.application.input.RequestReader;
@@ -8,7 +9,6 @@ import core.application.input.console.ConsoleRequestReader;
 import core.application.input.console.entity.ConsoleRequest;
 import core.application.resolve.Resolver;
 import core.application.resolve.console.ConsoleControllerResolver;
-import core.ioc.exception.ApplicationException;
 
 public class ConsoleRunner implements Runner {
 
@@ -26,6 +26,7 @@ public class ConsoleRunner implements Runner {
 
     @Override
     public void run(String ... args) {
+        System.out.println("--- Please enter request command --- (<exit> to exit from program)");
         String input = null;
         while (!EXIT_COMMAND_NAME.equalsIgnoreCase(input)) {
             input = reader.read();
