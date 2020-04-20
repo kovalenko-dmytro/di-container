@@ -6,7 +6,7 @@ import core.application.input.RequestParser;
 import core.application.input.RequestReader;
 import core.application.input.console.ConsoleRequestParser;
 import core.application.input.console.ConsoleRequestReader;
-import core.application.input.console.entity.ConsoleRequest;
+import core.application.input.entity.ConsoleRequest;
 import core.application.resolve.Resolver;
 import core.application.resolve.console.ConsoleControllerResolver;
 import core.ioc.exception.BeanCreationException;

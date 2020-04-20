@@ -1,4 +1,4 @@
-package core.application.input.console.entity;
+package core.application.input.entity;
 
 import java.util.Map;
 

@@ -1,7 +1,7 @@
 package core.application.resolve.console;
 
 import core.application.exception.ApplicationException;
-import core.application.input.console.entity.ConsoleRequest;
+import core.application.input.entity.ConsoleRequest;
 import core.application.resolve.Resolver;
 import core.application.resolve.annotation.PathVariable;
 import core.application.resolve.annotation.RequestMapping;
