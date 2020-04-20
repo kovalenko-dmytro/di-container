@@ -18,8 +18,6 @@ public abstract class Application {
 
     private static BeanFactory beanFactory;
 
-    public abstract void start(String... args);
-
     public static void launch(Class clazz, String... args) throws BeanCreationException, ApplicationException {
         instantiateBeans(clazz);
         Object launcher = getCurrentLauncher(clazz);
