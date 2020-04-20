@@ -28,15 +28,24 @@ public class ConsoleRunner implements Runner {
     @Override
     public void run(String ... args) {
         System.out.println("--- Please enter request command --- (<exit> to exit from program)");
-        String input = null;
-        while (!EXIT_COMMAND_NAME.equalsIgnoreCase(input)) {
+        String input;
+        while (true) {
             input = reader.read();
-            try {
-                ConsoleRequest request = parser.parse(input);
-                resolver.resolve(request);
-            } catch (ApplicationException | BeanCreationException e) {
-                System.out.println(e.getMessage());
-            }
+            if (checkExit(input)) { break; }
+            process(input);
         }
+    }
+
+    private void process(String input) {
+        try {
+            ConsoleRequest request = parser.parse(input);
+            resolver.resolve(request);
+        } catch (ApplicationException | BeanCreationException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private boolean checkExit(String input) {
+        return EXIT_COMMAND_NAME.equalsIgnoreCase(input);
     }
 }
