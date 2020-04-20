@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Target({ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Launcher {
-    LaunchType launchType() default LaunchType.CONSOLE;
+    LaunchType launchType();
 }
