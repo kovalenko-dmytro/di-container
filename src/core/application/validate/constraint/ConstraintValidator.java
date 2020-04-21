@@ -1,7 +1,5 @@
 package core.application.validate.constraint;
 
-import java.lang.annotation.Annotation;
-
-public interface ConstraintValidator<A extends Annotation, P> {
-    boolean isValid(P param);
+public interface ConstraintValidator {
+    boolean isValid(Object param);
 }

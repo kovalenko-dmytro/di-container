@@ -1,14 +1,13 @@
 package core.application.validate.constraint.validator;
 
 import core.application.validate.constraint.ConstraintValidator;
-import core.application.validate.constraint.annotation.NotNull;
 
 import java.util.Objects;
 
-public class NotNullConstraintValidator implements ConstraintValidator<NotNull, String> {
+public class NotNullConstraintValidator implements ConstraintValidator {
 
     @Override
-    public boolean isValid(String param) {
+    public boolean isValid(Object param) {
         return !Objects.isNull(param);
     }
 }

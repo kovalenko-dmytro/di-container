@@ -1,12 +1,11 @@
 package core.application.validate.constraint.validator;
 
 import core.application.validate.constraint.ConstraintValidator;
-import core.application.validate.constraint.annotation.NotEmpty;
 
-public class NotEmptyConstraintValidator implements ConstraintValidator<NotEmpty, String> {
+public class NotEmptyConstraintValidator implements ConstraintValidator {
 
     @Override
-    public boolean isValid(String param) {
-        return !param.isEmpty();
+    public boolean isValid(Object param) {
+        return !((String)param).isEmpty();
     }
 }
