@@ -6,6 +6,9 @@ import core.application.info.annotation.OperationParam;
 import core.application.info.annotation.OperationParams;
 import core.application.resolve.annotation.PathVariable;
 import core.application.resolve.annotation.RequestMapping;
+import core.application.validate.constraint.annotation.FilePath;
+import core.application.validate.constraint.annotation.NotBlank;
+import core.application.validate.constraint.annotation.NotNull;
 import core.ioc.bean.factory.annotation.Autowired;
 import core.ioc.bean.factory.stereotype.Controller;
 
@@ -23,8 +26,8 @@ public class ProductController {
             @OperationParam(name = "-file", description = "source file"),
             @OperationParam(name = "-source", description = "source directory"),
             @OperationParam(name = "-target", description = "target directory")}))
-    public void doCommand1(@PathVariable(name = "-file") String file,
-                          @PathVariable(name = "-source") String source,
+    public void doCommand1(@PathVariable(name = "-file") @NotNull @FilePath String file,
+                          @PathVariable(name = "-source") @NotBlank String source,
                           @PathVariable(name = "-target") String target) {
         System.out.println("command1 start.....");
         System.out.println(file);
