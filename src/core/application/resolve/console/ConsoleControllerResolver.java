@@ -1,6 +1,8 @@
 package core.application.resolve.console;
 
 import core.application.exception.ApplicationException;
+import core.application.help.HelpInfo;
+import core.application.help.console.ConsoleHelpInfo;
 import core.application.input.entity.ConsoleRequest;
 import core.application.resolve.Resolver;
 import core.application.resolve.annotation.PathVariable;
@@ -23,9 +25,17 @@ public class ConsoleControllerResolver implements Resolver<ConsoleRequest> {
     private static final String SPACE = " ";
     private static final String OPEN_CURL = "{";
     private static final String CLOSE_CURL = "}";
+    private static final String HELP_REQUEST = "helpInfo";
+
+    private HelpInfo<ConsoleRequest> helpInfo;
+
+    public ConsoleControllerResolver() {
+        helpInfo = new ConsoleHelpInfo();
+    }
 
     @Override
     public void resolve(ConsoleRequest request) throws ApplicationException, BeanCreationException {
+        checkHelpRequest(request);
         List<Object> controllers = BeanFactory.getInstance().getControllers();
         RequestPathMatchResult result = findRequestPathMatch(controllers, request);
         Method pathMatchMethod = result.getRequestPathMethod();
@@ -33,6 +43,12 @@ public class ConsoleControllerResolver implements Resolver<ConsoleRequest> {
             pathMatchMethod.invoke(result.getController(), mapRequestParameters(pathMatchMethod, request));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new ApplicationException(ErrorMessage.CANNOT_INVOKE_CONTROLLER_METHOD.getValue() + result.getRequestPathMethod().getName());
+        }
+    }
+
+    private void checkHelpRequest(ConsoleRequest request) {
+        if (HELP_REQUEST.equalsIgnoreCase(request.getRequestPath())) {
+            helpInfo.getInfo(request);
         }
     }
 
