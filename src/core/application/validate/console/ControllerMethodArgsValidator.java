@@ -27,44 +27,29 @@ public class ControllerMethodArgsValidator implements Validator<RequestPathMatch
     @Override
     public void validate(RequestPathMatchResult matchResult, ConsoleRequest request) throws ApplicationException {
         for (Parameter parameter: matchResult.getRequestPathMethod().getParameters()) {
-            List<Annotation> annotations = getValidateAnnotations(parameter);
-            processValidateAnnotation(request, parameter, annotations);
-        }
-    }
-
-    private void processValidateAnnotation(ConsoleRequest request, Parameter parameter, List<Annotation> annotations) throws ApplicationException {
-        for (Annotation annotation: annotations) {
-            Constraint constraint = annotation.annotationType().getAnnotation(Constraint.class);
-            Class constraintValidatorClass = constraint.validatedBy();
-            try {
-                processConstraintValidator(request, parameter, annotation, constraintValidatorClass);
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                e.printStackTrace();
+            List<Annotation> annotations = Arrays.stream(parameter.getAnnotations())
+                .filter(filterByValidateAnnotations())
+                .collect(Collectors.toList());
+            for (Annotation annotation: annotations) {
+                Constraint constraint = annotation.annotationType().getAnnotation(Constraint.class);
+                Class constraintValidatorClass = constraint.validatedBy();
+                try {
+                    Object constraintValidator = constraintValidatorClass.getDeclaredConstructor().newInstance();
+                    Method validateMethod = constraintValidator.getClass().getDeclaredMethod("isValid", String.class);
+                    if (parameter.isAnnotationPresent(PathVariable.class)) {
+                        String name = parameter.getAnnotation(PathVariable.class).name();
+                        boolean res = (boolean)validateMethod.invoke(constraintValidator, request.getRequestParameters().get(name));
+                        if (!res) {
+                            Class aClass1 = Arrays.stream(VALIDATE_ANNOTATIONS).filter(aClass -> aClass.equals(annotation.annotationType())).findFirst().get();
+                            Method m = annotation.annotationType().getDeclaredMethod("message");
+                            throw new ApplicationException(name + " path variable " + m.invoke(annotation));
+                        }
+                    }
+                } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
             }
         }
-    }
-
-    private void processConstraintValidator(ConsoleRequest request, Parameter parameter, Annotation annotation, Class constraintValidatorClass) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ApplicationException {
-        Object constraintValidator = constraintValidatorClass.getDeclaredConstructor().newInstance();
-        Method validateMethod = constraintValidator.getClass().getDeclaredMethod("isValid", String.class);
-        if (parameter.isAnnotationPresent(PathVariable.class)) {
-            validate(request, parameter, annotation, constraintValidator, validateMethod);
-        }
-    }
-
-    private void validate(ConsoleRequest request, Parameter parameter, Annotation annotation, Object constraintValidator, Method validateMethod) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ApplicationException {
-        String name = parameter.getAnnotation(PathVariable.class).name();
-        boolean res = (boolean)validateMethod.invoke(constraintValidator, request.getRequestParameters().get(name));
-        if (!res) {
-            Method m = annotation.annotationType().getDeclaredMethod("message");
-            throw new ApplicationException(name + " path variable " + m.invoke(annotation));
-        }
-    }
-
-    private List<Annotation> getValidateAnnotations(Parameter parameter) {
-        return Arrays.stream(parameter.getAnnotations())
-                    .filter(filterByValidateAnnotations())
-                    .collect(Collectors.toList());
     }
 
     private Predicate<Annotation> filterByValidateAnnotations() {
