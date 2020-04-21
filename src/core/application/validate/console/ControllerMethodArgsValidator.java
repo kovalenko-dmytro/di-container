@@ -6,6 +6,7 @@ import core.application.resolve.annotation.PathVariable;
 import core.application.resolve.entity.RequestPathMatchResult;
 import core.application.validate.Validator;
 import core.application.validate.annotation.Constraint;
+import core.application.validate.annotation.Messaged;
 import core.application.validate.constraint.ConstraintValidator;
 import core.application.validate.constraint.annotation.FilePath;
 import core.application.validate.constraint.annotation.NotBlank;
@@ -13,7 +14,6 @@ import core.application.validate.constraint.annotation.NotEmpty;
 import core.application.validate.constraint.annotation.NotNull;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
 import java.util.Arrays;
 import java.util.List;
@@ -37,7 +37,9 @@ public class ControllerMethodArgsValidator implements Validator<RequestPathMatch
         if (parameter.isAnnotationPresent(PathVariable.class)) {
             String parameterName = parameter.getAnnotation(PathVariable.class).name();
             boolean result = constraintValidator.isValid(request.getRequestParameters().get(parameterName));
-            handleValidateResult(annotation, parameterName, result);
+            if (!result) {
+                handleValidateResult(annotation, parameterName);
+            }
         }
     }
 
@@ -51,19 +53,9 @@ public class ControllerMethodArgsValidator implements Validator<RequestPathMatch
         }
     }
 
-    private void handleValidateResult(Annotation annotation, String parameterName, boolean result) throws ApplicationException {
-        if (!result) {
-            Object message = getMessage(annotation);
-            throw new ApplicationException(parameterName + " path variable " + message);
-        }
-    }
-
-    private Object getMessage(Annotation annotation) throws ApplicationException {
-        try {
-            return annotation.annotationType().getDeclaredMethods()[0].invoke(annotation);
-        } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new ApplicationException("");
-        }
+    private void handleValidateResult(Annotation annotation, String parameterName) throws ApplicationException {
+        String message = annotation.annotationType().getAnnotation(Messaged.class).message();
+        throw new ApplicationException(parameterName + " path variable " + message);
     }
 
     private List<Annotation> filterValidateAnnotations(Parameter parameter) {

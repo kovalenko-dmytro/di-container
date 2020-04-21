@@ -1,6 +1,7 @@
 package core.application.validate.constraint.annotation;
 
 import core.application.validate.annotation.Constraint;
+import core.application.validate.annotation.Messaged;
 import core.application.validate.constraint.validator.FilePathConstraintValidator;
 
 import java.lang.annotation.ElementType;
@@ -11,6 +12,6 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = FilePathConstraintValidator.class)
+@Messaged(message = "must be valid file or directory path")
 public @interface FilePath {
-    String message() default "must be valid file or directory path";
 }
