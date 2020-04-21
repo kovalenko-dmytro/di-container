@@ -7,6 +7,6 @@ public class NotBlankConstraintValidator implements ConstraintValidator<NotBlank
 
     @Override
     public boolean isValid(String param) {
-        return false;
+        return !param.isBlank();
     }
 }

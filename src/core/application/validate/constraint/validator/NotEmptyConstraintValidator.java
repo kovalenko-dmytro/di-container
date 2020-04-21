@@ -7,6 +7,6 @@ public class NotEmptyConstraintValidator implements ConstraintValidator<NotEmpty
 
     @Override
     public boolean isValid(String param) {
-        return false;
+        return !param.isEmpty();
     }
 }
