@@ -1,6 +1,9 @@
 package client.controller;
 
 import client.service.ClientService;
+import core.application.help.annotation.HelpOperation;
+import core.application.help.annotation.OperationParam;
+import core.application.help.annotation.OperationParams;
 import core.application.resolve.annotation.PathVariable;
 import core.application.resolve.annotation.RequestMapping;
 import core.ioc.bean.factory.annotation.Autowired;
@@ -13,6 +16,13 @@ public class ProductController {
     private ClientService clientService;
 
     @RequestMapping(path = "analyze java {-file} {-source} {-target}")
+    @HelpOperation(
+        api = "analyze java {-file} {-source} {-target}",
+        description = "Analyzes source files and get queries for converting",
+        values = @OperationParams(value = {
+            @OperationParam(name = "-file", description = "source file"),
+            @OperationParam(name = "-source", description = "source directory"),
+            @OperationParam(name = "-target", description = "target directory")}))
     public void doCommand1(@PathVariable(name = "-file") String file,
                           @PathVariable(name = "-source") String source,
                           @PathVariable(name = "-target") String target) {
