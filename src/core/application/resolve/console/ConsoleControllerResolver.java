@@ -7,6 +7,7 @@ import core.application.input.entity.ConsoleRequest;
 import core.application.resolve.Resolver;
 import core.application.resolve.annotation.PathVariable;
 import core.application.resolve.annotation.RequestMapping;
+import core.application.resolve.constant.ResolveConstant;
 import core.application.resolve.entity.RequestPathMatchResult;
 import core.ioc.bean.factory.BeanFactory;
 import core.ioc.constant.ErrorMessage;
@@ -22,11 +23,6 @@ import java.util.stream.Collectors;
 
 public class ConsoleControllerResolver implements Resolver<ConsoleRequest> {
 
-    private static final String SPACE = " ";
-    private static final String OPEN_CURL = "{";
-    private static final String CLOSE_CURL = "}";
-    private static final String HELP_REQUEST = "info";
-
     private ApiInfo<ConsoleRequest> apiInfo;
 
     public ConsoleControllerResolver() {
@@ -35,7 +31,7 @@ public class ConsoleControllerResolver implements Resolver<ConsoleRequest> {
 
     @Override
     public void resolve(ConsoleRequest request) throws ApplicationException, BeanCreationException {
-        if (HELP_REQUEST.equalsIgnoreCase(request.getRequestPath())) {
+        if (ResolveConstant.HELP_REQUEST.getValue().equalsIgnoreCase(request.getRequestPath())) {
             apiInfo.getInfo(request);
             return;
         }
@@ -68,12 +64,15 @@ public class ConsoleControllerResolver implements Resolver<ConsoleRequest> {
 
     private String resolveRequestPath(ConsoleRequest request) {
         return request.getRequestPath()
-            .concat(SPACE)
+            .concat(ResolveConstant.SPACE.getValue())
             .concat(
                 request.getRequestParameters().keySet()
                     .stream()
-                    .map(pathVariable -> OPEN_CURL + pathVariable + CLOSE_CURL)
-                    .collect(Collectors.joining(SPACE)));
+                    .map(pathVariable ->
+                        ResolveConstant.OPEN_CURL.getValue()
+                            .concat(pathVariable)
+                            .concat(ResolveConstant.CLOSE_CURL.getValue()))
+                    .collect(Collectors.joining(ResolveConstant.SPACE.getValue())));
     }
 
     private Object[] mapRequestParameters(Method requestPathMethod, ConsoleRequest request) throws ApplicationException {
