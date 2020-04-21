@@ -28,7 +28,7 @@ public class ConsoleRunner implements Runner {
     @Override
     public void run(String ... args) {
         System.out.println("-------- Please enter request command --------");
-        System.out.println("<help> to view available API info");
+        System.out.println("<info> to view available API info");
         System.out.println("<exit> to exit from program");
         String input;
         while (true) {

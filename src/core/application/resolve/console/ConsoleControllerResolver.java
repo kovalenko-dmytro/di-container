@@ -1,8 +1,8 @@
 package core.application.resolve.console;
 
 import core.application.exception.ApplicationException;
-import core.application.help.HelpInfo;
-import core.application.help.console.ConsoleHelpInfo;
+import core.application.info.ApiInfo;
+import core.application.info.console.ConsoleApiInfo;
 import core.application.input.entity.ConsoleRequest;
 import core.application.resolve.Resolver;
 import core.application.resolve.annotation.PathVariable;
@@ -25,18 +25,18 @@ public class ConsoleControllerResolver implements Resolver<ConsoleRequest> {
     private static final String SPACE = " ";
     private static final String OPEN_CURL = "{";
     private static final String CLOSE_CURL = "}";
-    private static final String HELP_REQUEST = "help";
+    private static final String HELP_REQUEST = "info";
 
-    private HelpInfo<ConsoleRequest> helpInfo;
+    private ApiInfo<ConsoleRequest> apiInfo;
 
     public ConsoleControllerResolver() {
-        helpInfo = new ConsoleHelpInfo();
+        apiInfo = new ConsoleApiInfo();
     }
 
     @Override
     public void resolve(ConsoleRequest request) throws ApplicationException, BeanCreationException {
         if (HELP_REQUEST.equalsIgnoreCase(request.getRequestPath())) {
-            helpInfo.getInfo(request);
+            apiInfo.getInfo(request);
             return;
         }
         List<Object> controllers = BeanFactory.getInstance().getControllers();
