@@ -8,8 +8,11 @@ import core.application.input.RequestReader;
 import core.application.input.console.ConsoleRequestParser;
 import core.application.input.console.ConsoleRequestReader;
 import core.application.input.entity.ConsoleRequest;
+import core.application.invoke.Invoker;
+import core.application.invoke.console.ConsoleControllerMethodInvoker;
 import core.application.resolve.Resolver;
 import core.application.resolve.console.ConsoleControllerResolver;
+import core.application.resolve.entity.RequestPathMatchResult;
 import core.application.runner.Runner;
 import core.application.runner.constant.RunnerConstant;
 import core.ioc.exception.BeanCreationException;
@@ -18,13 +21,15 @@ public class ConsoleRunner implements Runner {
 
     private RequestReader<String> reader;
     private RequestParser<ConsoleRequest> parser;
-    private Resolver<ConsoleRequest> resolver;
+    private Resolver<ConsoleRequest, RequestPathMatchResult> resolver;
+    private Invoker<RequestPathMatchResult, ConsoleRequest> invoker;
     private ApiInfo apiInfo;
 
     public ConsoleRunner() {
         reader = new ConsoleRequestReader();
         parser = new ConsoleRequestParser();
         resolver = new ConsoleControllerResolver();
+        invoker = new ConsoleControllerMethodInvoker();
         apiInfo = new ConsoleApiInfo();
     }
 
@@ -48,7 +53,8 @@ public class ConsoleRunner implements Runner {
                 return;
             }
             ConsoleRequest request = parser.parse(input);
-            resolver.resolve(request);
+            RequestPathMatchResult pathMatchResult = resolver.resolve(request);
+            invoker.invoke(pathMatchResult, request);
         } catch (ApplicationException | BeanCreationException e) {
             System.out.println(e.getMessage());
         }
