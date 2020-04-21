@@ -2,6 +2,7 @@ package core.application.input.console;
 
 import core.application.exception.ApplicationException;
 import core.application.input.RequestParser;
+import core.application.input.constant.InputConstant;
 import core.application.input.entity.ConsoleRequest;
 import core.ioc.constant.ErrorMessage;
 
@@ -13,9 +14,6 @@ import java.util.regex.Pattern;
 
 public class ConsoleRequestParser implements RequestParser<ConsoleRequest> {
 
-    private static final String REQUEST_PATH_REGEX = "^([^-]+)";
-    private static final String REQUEST_PARAMS_REGEX = "(-\\S+)\\s*((\"(.*?)\")|([^-]\\S*))?";
-
     @Override
     public ConsoleRequest parse(String input) throws ApplicationException {
         ConsoleRequest request = new ConsoleRequest();
@@ -25,7 +23,7 @@ public class ConsoleRequestParser implements RequestParser<ConsoleRequest> {
     }
 
     private String getRequestPath(String input) throws ApplicationException {
-        Matcher matcher = Pattern.compile(REQUEST_PATH_REGEX, Pattern.CASE_INSENSITIVE).matcher(input);
+        Matcher matcher = Pattern.compile(InputConstant.REQUEST_PATH_REGEX.getValue(), Pattern.CASE_INSENSITIVE).matcher(input);
         if (matcher.find()) {
             return matcher.group().trim();
         }
@@ -34,7 +32,7 @@ public class ConsoleRequestParser implements RequestParser<ConsoleRequest> {
 
     private Map<String, String> getRequestParameters(String input) {
         Map<String, String> result = new LinkedHashMap<>();
-        Matcher matcher = Pattern.compile(REQUEST_PARAMS_REGEX, Pattern.CASE_INSENSITIVE).matcher(input);
+        Matcher matcher = Pattern.compile(InputConstant.REQUEST_PARAMS_REGEX.getValue(), Pattern.CASE_INSENSITIVE).matcher(input);
         while (matcher.find()) {
             String paramName = matcher.group(1);
             String paramValue = matcher.group(4);
