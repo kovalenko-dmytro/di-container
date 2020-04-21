@@ -4,7 +4,6 @@ import core.application.info.ApiInfo;
 import core.application.info.annotation.OperationInfo;
 import core.application.info.annotation.OperationParam;
 import core.application.info.constant.ApiInfoConstant;
-import core.application.input.entity.ConsoleRequest;
 import core.application.resolve.annotation.RequestMapping;
 import core.ioc.bean.factory.BeanFactory;
 import core.ioc.exception.BeanCreationException;
@@ -14,10 +13,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ConsoleApiInfo implements ApiInfo<ConsoleRequest> {
+public class ConsoleApiInfo implements ApiInfo {
 
     @Override
-    public void getInfo(ConsoleRequest request) throws BeanCreationException {
+    public void getInfo() throws BeanCreationException {
         List<Method> methods = findRequestMappingMethods();
         methods.forEach(method -> {
             System.out.println(ApiInfoConstant.API_DELIMITER.getValue());

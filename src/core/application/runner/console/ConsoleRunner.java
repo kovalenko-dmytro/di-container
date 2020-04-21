@@ -1,6 +1,8 @@
 package core.application.runner.console;
 
 import core.application.exception.ApplicationException;
+import core.application.info.ApiInfo;
+import core.application.info.console.ConsoleApiInfo;
 import core.application.input.RequestParser;
 import core.application.input.RequestReader;
 import core.application.input.console.ConsoleRequestParser;
@@ -17,11 +19,13 @@ public class ConsoleRunner implements Runner {
     private RequestReader<String> reader;
     private RequestParser<ConsoleRequest> parser;
     private Resolver<ConsoleRequest> resolver;
+    private ApiInfo apiInfo;
 
     public ConsoleRunner() {
         reader = new ConsoleRequestReader();
         parser = new ConsoleRequestParser();
         resolver = new ConsoleControllerResolver();
+        apiInfo = new ConsoleApiInfo();
     }
 
     @Override
@@ -39,11 +43,19 @@ public class ConsoleRunner implements Runner {
 
     private void process(String input) {
         try {
+            if (checkInfo(input)) {
+                apiInfo.getInfo();
+                return;
+            }
             ConsoleRequest request = parser.parse(input);
             resolver.resolve(request);
         } catch (ApplicationException | BeanCreationException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private boolean checkInfo(String input) {
+        return RunnerConstant.INFO_COMMAND_NAME.getValue().equalsIgnoreCase(input);
     }
 
     private boolean checkExit(String input) {

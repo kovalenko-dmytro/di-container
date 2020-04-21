@@ -1,8 +1,6 @@
 package core.application.resolve.console;
 
 import core.application.exception.ApplicationException;
-import core.application.info.ApiInfo;
-import core.application.info.console.ConsoleApiInfo;
 import core.application.input.entity.ConsoleRequest;
 import core.application.resolve.Resolver;
 import core.application.resolve.annotation.PathVariable;
@@ -23,18 +21,8 @@ import java.util.stream.Collectors;
 
 public class ConsoleControllerResolver implements Resolver<ConsoleRequest> {
 
-    private ApiInfo<ConsoleRequest> apiInfo;
-
-    public ConsoleControllerResolver() {
-        apiInfo = new ConsoleApiInfo();
-    }
-
     @Override
     public void resolve(ConsoleRequest request) throws ApplicationException, BeanCreationException {
-        if (ResolveConstant.HELP_REQUEST.getValue().equalsIgnoreCase(request.getRequestPath())) {
-            apiInfo.getInfo(request);
-            return;
-        }
         List<Object> controllers = BeanFactory.getInstance().getControllers();
         RequestPathMatchResult result = findRequestPathMatch(controllers, request);
         Method pathMatchMethod = result.getRequestPathMethod();
