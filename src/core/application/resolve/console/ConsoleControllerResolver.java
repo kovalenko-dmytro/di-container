@@ -25,7 +25,7 @@ public class ConsoleControllerResolver implements Resolver<ConsoleRequest> {
     private static final String SPACE = " ";
     private static final String OPEN_CURL = "{";
     private static final String CLOSE_CURL = "}";
-    private static final String HELP_REQUEST = "helpInfo";
+    private static final String HELP_REQUEST = "help";
 
     private HelpInfo<ConsoleRequest> helpInfo;
 
@@ -35,7 +35,10 @@ public class ConsoleControllerResolver implements Resolver<ConsoleRequest> {
 
     @Override
     public void resolve(ConsoleRequest request) throws ApplicationException, BeanCreationException {
-        checkHelpRequest(request);
+        if (HELP_REQUEST.equalsIgnoreCase(request.getRequestPath())) {
+            helpInfo.getInfo(request);
+            return;
+        }
         List<Object> controllers = BeanFactory.getInstance().getControllers();
         RequestPathMatchResult result = findRequestPathMatch(controllers, request);
         Method pathMatchMethod = result.getRequestPathMethod();
@@ -43,12 +46,6 @@ public class ConsoleControllerResolver implements Resolver<ConsoleRequest> {
             pathMatchMethod.invoke(result.getController(), mapRequestParameters(pathMatchMethod, request));
         } catch (IllegalAccessException | InvocationTargetException e) {
             throw new ApplicationException(ErrorMessage.CANNOT_INVOKE_CONTROLLER_METHOD.getValue() + result.getRequestPathMethod().getName());
-        }
-    }
-
-    private void checkHelpRequest(ConsoleRequest request) {
-        if (HELP_REQUEST.equalsIgnoreCase(request.getRequestPath())) {
-            helpInfo.getInfo(request);
         }
     }
 
