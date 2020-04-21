@@ -9,11 +9,10 @@ import core.application.input.entity.ConsoleRequest;
 import core.application.resolve.Resolver;
 import core.application.resolve.console.ConsoleControllerResolver;
 import core.application.runner.Runner;
+import core.application.runner.constant.RunnerConstant;
 import core.ioc.exception.BeanCreationException;
 
 public class ConsoleRunner implements Runner {
-
-    private static final String EXIT_COMMAND_NAME = "exit";
 
     private RequestReader<String> reader;
     private RequestParser<ConsoleRequest> parser;
@@ -27,9 +26,9 @@ public class ConsoleRunner implements Runner {
 
     @Override
     public void run(String ... args) {
-        System.out.println("-------- Please enter request command --------");
-        System.out.println("<info> to view available API info");
-        System.out.println("<exit> to exit from program");
+        System.out.println(RunnerConstant.PLEASE_ENTER_REQUEST_COMMAND.getValue());
+        System.out.println(RunnerConstant.INFO_TO_VIEW_AVAILABLE_API_INFO.getValue());
+        System.out.println(RunnerConstant.EXIT_TO_EXIT_FROM_PROGRAM.getValue());
         String input;
         while (true) {
             input = reader.read();
@@ -48,6 +47,6 @@ public class ConsoleRunner implements Runner {
     }
 
     private boolean checkExit(String input) {
-        return EXIT_COMMAND_NAME.equalsIgnoreCase(input);
+        return RunnerConstant.EXIT_COMMAND_NAME.getValue().equalsIgnoreCase(input);
     }
 }
