@@ -12,9 +12,11 @@ import core.application.validate.constraint.annotation.FilePath;
 import core.application.validate.constraint.annotation.NotBlank;
 import core.application.validate.constraint.annotation.NotEmpty;
 import core.application.validate.constraint.annotation.NotNull;
+import core.ioc.constant.ErrorMessage;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Parameter;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,13 +51,13 @@ public class ControllerMethodArgsValidator implements Validator<RequestPathMatch
         try {
             return (ConstraintValidator) constraintValidatorClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new ApplicationException("");
+            throw new ApplicationException(ErrorMessage.CANNOT_FIND_CONSTRAINT_VALIDATOR.getValue());
         }
     }
 
     private void handleValidateResult(Annotation annotation, String parameterName) throws ApplicationException {
         String message = annotation.annotationType().getAnnotation(Messaged.class).message();
-        throw new ApplicationException(parameterName + " path variable " + message);
+        throw new ApplicationException(MessageFormat.format(ErrorMessage.VALIDATE_MESSAGE.getValue(), parameterName, message));
     }
 
     private List<Annotation> filterValidateAnnotations(Parameter parameter) {
