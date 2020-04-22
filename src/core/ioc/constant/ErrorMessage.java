@@ -17,7 +17,9 @@ public enum ErrorMessage {
     CANNOT_RESOLVE_REQUEST_PATH(ERROR_PREFIX.value + "Cannot resolve request path"),
     CANNOT_RESOLVE_PATH_VARIABLE(ERROR_PREFIX.value + "Cannot resolve path variable with name: {0} for request path: {1}"),
     CANNOT_FIND_CONSTRAINT_VALIDATOR(ERROR_PREFIX.value + "Cannot find constraint validator"),
-    VALIDATE_MESSAGE(ERROR_PREFIX.value + "<{0}> path variable {1}");
+    VALIDATE_MESSAGE(ERROR_PREFIX.value + "<{0}> path variable {1}"),
+    APP_PROPERTIES_NOT_INIT(ERROR_PREFIX.value + "Application configuration properties weren't initialized"),
+    CANNOT_CONFIGURE_PROPERTIES(ERROR_PREFIX.value + "Cannot configure application properties");
 
 
     private String value;

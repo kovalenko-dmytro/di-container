@@ -1,5 +1,7 @@
 package core.application.runner.console;
 
+import core.application.configuration.ArgumentsParser;
+import core.application.configuration.console.ConsoleArgumentsParser;
 import core.application.exception.ApplicationException;
 import core.application.info.ApiInfo;
 import core.application.info.console.ConsoleApiInfo;
@@ -21,6 +23,7 @@ import core.ioc.exception.BeanCreationException;
 
 public class ConsoleRunner implements Runner {
 
+    private ArgumentsParser argumentsParser;
     private RequestReader<String> reader;
     private RequestParser<ConsoleRequest> parser;
     private Resolver<ConsoleRequest, RequestPathMatchResult> resolver;
@@ -29,6 +32,7 @@ public class ConsoleRunner implements Runner {
     private ApiInfo apiInfo;
 
     public ConsoleRunner() {
+        argumentsParser = new ConsoleArgumentsParser();
         reader = new ConsoleRequestReader();
         parser = new ConsoleRequestParser();
         resolver = new ConsoleControllerResolver();
@@ -38,8 +42,9 @@ public class ConsoleRunner implements Runner {
     }
 
     @Override
-    public void run(String ... args) {
+    public void run(String ... args) throws ApplicationException {
         printPreview();
+        argumentsParser.parse(args);
         String input;
         while (true) {
             input = reader.read();
