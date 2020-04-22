@@ -4,12 +4,14 @@ import core.application.exception.ApplicationException;
 import core.application.input.entity.ConsoleRequest;
 import core.application.invoke.Invoker;
 import core.application.resolve.annotation.PathVariable;
+import core.application.resolve.annotation.RequestMapping;
 import core.application.resolve.entity.RequestPathMatchResult;
 import core.ioc.constant.ErrorMessage;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -35,7 +37,10 @@ public class ConsoleControllerMethodInvoker implements Invoker<RequestPathMatchR
                 result.add(
                     Optional
                         .ofNullable(value)
-                        .orElseThrow(() -> new ApplicationException(ErrorMessage.CANNOT_RESOLVE_PATH_VARIABLE.getValue() + name)));
+                        .orElseThrow(() -> new ApplicationException(MessageFormat.format(
+                            ErrorMessage.CANNOT_RESOLVE_PATH_VARIABLE.getValue(),
+                            name,
+                            requestPathMethod.getAnnotation(RequestMapping.class).path()))));
             }
         }
         return result.toArray();

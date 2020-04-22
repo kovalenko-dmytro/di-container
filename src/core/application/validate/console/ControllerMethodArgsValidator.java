@@ -36,13 +36,9 @@ public class ControllerMethodArgsValidator implements Validator<RequestPathMatch
 
     private void processConstraintValidator(ConsoleRequest request, Parameter parameter, Annotation annotation) throws ApplicationException {
         ConstraintValidator constraintValidator = initConstraintValidator(annotation);
-        if (parameter.isAnnotationPresent(PathVariable.class)) {
-            String parameterName = parameter.getAnnotation(PathVariable.class).name();
-            boolean result = constraintValidator.isValid(request.getRequestParameters().get(parameterName));
-            if (!result) {
-                handleValidateResult(annotation, parameterName);
-            }
-        }
+        String parameterName = parameter.getAnnotation(PathVariable.class).name();
+        boolean result = constraintValidator.isValid(request.getRequestParameters().get(parameterName));
+        if (!result) { handleValidateResult(annotation, parameterName); }
     }
 
     private ConstraintValidator initConstraintValidator(Annotation annotation) throws ApplicationException {
