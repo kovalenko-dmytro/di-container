@@ -2,6 +2,8 @@ package core.application.configuration;
 
 import core.application.exception.ApplicationException;
 
+import java.util.Map;
+
 public interface ArgumentsParser {
-    void parse(String ... args) throws ApplicationException;
+    Map<String, String> parse(String ... args) throws ApplicationException;
 }

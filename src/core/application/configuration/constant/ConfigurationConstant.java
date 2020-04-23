@@ -4,7 +4,8 @@ public enum ConfigurationConstant {
 
     CONFIGURATION_PROPERTIES_DEFAULT_FILE_PATH("/configuration.properties"),
     KEY_PREFIX("-"),
-    CONFIG_KEY("-config");
+    CONFIG_KEY("-config"),
+    ARG_ASSIGN("=");
 
     private String value;
 
