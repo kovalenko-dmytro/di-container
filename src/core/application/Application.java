@@ -1,16 +1,11 @@
 package core.application;
 
 import core.application.exception.ApplicationException;
-import core.application.runner.Runner;
-import core.application.runner.RunnerFactory;
+import core.application.runner.ApplicationRunner;
 import core.ioc.annotation.ScanPackage;
 import core.ioc.bean.factory.BeanFactory;
-import core.ioc.bean.factory.stereotype.Launcher;
 import core.ioc.constant.ErrorMessage;
 import core.ioc.exception.BeanCreationException;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class Application {
 
@@ -19,28 +14,10 @@ public class Application {
     public static void launch(Class clazz, String... args) {
         try {
             instantiateBeans(clazz);
-            Object launcher = getCurrentLauncher(clazz);
-            Runner runner = RunnerFactory.getRunner(launcher.getClass().getAnnotation(Launcher.class).launchType());
-            runner.run(args);
+            ApplicationRunner.getInstance().run(args);
         } catch (ApplicationException | BeanCreationException e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    private static Object getCurrentLauncher(Class clazz) throws BeanCreationException {
-        List<Object> launchers = findLaunchers(clazz);
-        if (launchers.size() > 1) {
-            throw new BeanCreationException(ErrorMessage.CANNOT_MORE_THAN_ONE_LAUNCHER.getValue());
-        }
-        return launchers.get(0);
-    }
-
-    private static List<Object> findLaunchers(Class clazz) throws BeanCreationException {
-        return BeanFactory.getInstance().getLaunchBeans().stream()
-            .filter(bean ->
-                bean.getClass().getAnnotation(Launcher.class).launchType()
-                    .equals(((Launcher) clazz.getAnnotation(Launcher.class)).launchType()))
-            .collect(Collectors.toList());
     }
 
     private static void instantiateBeans(Class clazz) throws BeanCreationException {

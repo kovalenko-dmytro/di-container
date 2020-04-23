@@ -1,7 +1,6 @@
 package core.ioc.bean.scanner;
 
 import core.ioc.bean.factory.stereotype.Controller;
-import core.ioc.bean.factory.stereotype.Launcher;
 import core.ioc.bean.factory.stereotype.Service;
 import core.ioc.constant.ContainerConstant;
 import core.ioc.constant.ErrorMessage;
@@ -59,7 +58,7 @@ public class BeanScanner {
         Class classObject;
         try {
             classObject = Class.forName(packageName.concat(ContainerConstant.DOT.getValue()).concat(className));
-            if (classObject.isAnnotationPresent(Service.class) || classObject.isAnnotationPresent(Controller.class) || classObject.isAnnotationPresent(Launcher.class)) {
+            if (classObject.isAnnotationPresent(Service.class) || classObject.isAnnotationPresent(Controller.class)) {
                 Object instance = classObject.getDeclaredConstructor().newInstance();
                 String beanName = className.substring(0, 1).toLowerCase().concat(className.substring(1));
                 beans.put(beanName, instance);
